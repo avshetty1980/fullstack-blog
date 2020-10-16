@@ -1,10 +1,14 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { MongoClient } from 'mongodb';
+import path from "path";
 
 const app = express();
 
 const port = 8000;
+
+//where to serve static files (ike images) from
+app.use(express.static(path.join(__dirname, "/build")))
 
 //must be above the routes, parses JSON object from POST req and add body
 //property req param with matching route
@@ -93,6 +97,11 @@ res.status(200).json(updatedArticleInfo);
 }, res);
 
 });
+
+//all routes not caught by routes defined above should be paeed to app
+app.get("*", (req, res) => {
+  res.send(path.join(__dirname + "/build/index.html"));
+})
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
